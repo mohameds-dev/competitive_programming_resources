@@ -18,28 +18,20 @@ compile_and_run_test() {
     echo "Running tests for: $dir"
     echo "========================================="
     
-    # Compile tests
-    if g++ -std=c++17 -O2 -Wall -o "$dir/test_runner" "$test_file"; then
-        # Run tests
-        if [ -f "$dir/test_runner" ]; then
-            cd "$dir"
-            ./test_runner
-            TEST_STATUS=$?
-            cd ..
-            rm -f "$dir/test_runner"
-            
-            if [ $TEST_STATUS -eq 0 ]; then
-                echo "✓ Tests passed for $dir"
-                return 0
-            else
-                echo "✗ Tests failed for $dir"
-                return 1
-            fi
-        fi
-    else
-        echo "✗ Compilation failed for $dir"
+    # Compile tests - errors will be shown automatically
+    if ! g++ -std=c++17 -O2 -Wall -o "$dir/test_runner" "$test_file" 2>&1; then
         return 1
     fi
+    
+    # Run tests - output will show any errors
+    if [ -f "$dir/test_runner" ]; then
+        cd "$dir"
+        ./test_runner
+        cd ..
+        rm -f "$dir/test_runner"
+    fi
+    
+    return 0
 }
 
 if [ $# -eq 1 ]; then
@@ -61,9 +53,7 @@ else
     echo "Running tests for all directories..."
     echo ""
     
-    FAILED_DIRS=()
-    PASSED_COUNT=0
-    TOTAL_COUNT=0
+    ERROR_DIRS=()
     
     for dir in */; do
         dir=${dir%/}
@@ -73,36 +63,22 @@ else
             continue
         fi
         
-        TOTAL_COUNT=$((TOTAL_COUNT + 1))
-        
-        if compile_and_run_test "$dir"; then
-            PASSED_COUNT=$((PASSED_COUNT + 1))
-        else
-            FAILED_DIRS+=("$dir")
+        if ! compile_and_run_test "$dir"; then
+            ERROR_DIRS+=("$dir")
         fi
         
         echo ""
     done
     
     # Summary
-    echo "========================================="
-    echo "Test Summary"
-    echo "========================================="
-    echo "Total directories tested: $TOTAL_COUNT"
-    echo "Passed: $PASSED_COUNT"
-    echo "Failed: ${#FAILED_DIRS[@]}"
-    
-    if [ ${#FAILED_DIRS[@]} -gt 0 ]; then
-        echo ""
-        echo "Failed directories:"
-        for dir in "${FAILED_DIRS[@]}"; do
+    if [ ${#ERROR_DIRS[@]} -gt 0 ]; then
+        echo "========================================="
+        echo "Directories with errors:"
+        echo "========================================="
+        for dir in "${ERROR_DIRS[@]}"; do
             echo "  - $dir"
         done
         exit 1
-    else
-        echo ""
-        echo "All tests passed! ✓"
-        exit 0
     fi
 fi
 

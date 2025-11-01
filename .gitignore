@@ -36,6 +36,7 @@
 *.exe
 *.out
 *.app
+test_runner
 
 # debug information files
 *.dwo

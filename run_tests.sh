@@ -57,7 +57,7 @@ if [ $# -eq 1 ]; then
         exit 1
     fi
 else
-    # Run tests for all directories (except template)
+    # Run tests for all directories
     echo "Running tests for all directories..."
     echo ""
     
@@ -67,11 +67,6 @@ else
     
     for dir in */; do
         dir=${dir%/}
-        
-        # Skip template directory
-        if [ "$dir" = "template" ]; then
-            continue
-        fi
         
         # Skip if not a directory or doesn't have tests.cpp
         if [ ! -d "$dir" ] || [ ! -f "$dir/tests.cpp" ]; then

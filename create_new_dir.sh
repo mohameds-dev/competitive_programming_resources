@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to create a new directory from template
+# Script to create a new directory from dir_template
 # Usage: ./create_new_dir.sh directory_name
 
 if [ $# -eq 0 ]; then
@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 fi
 
 DIR_NAME="$1"
-TEMPLATE_DIR="template"
+TEMPLATE_DIR="dir_template"
 
 if [ ! -d "$TEMPLATE_DIR" ]; then
     echo "Error: Template directory '$TEMPLATE_DIR' not found"
@@ -22,8 +22,8 @@ if [ -d "$DIR_NAME" ]; then
     exit 1
 fi
 
-# Copy template directory
-echo "Creating directory '$DIR_NAME' from template..."
+# Copy dir_template directory
+echo "Creating directory '$DIR_NAME' from dir_template..."
 cp -r "$TEMPLATE_DIR" "$DIR_NAME"
 
 # Replace "Code Template" with directory name in readme.md

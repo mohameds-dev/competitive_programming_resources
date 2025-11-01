@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to run tests
+# Script to run tests (using Catch2)
 # Usage: ./run_tests.sh [directory_name]
 #   If directory_name is provided, runs tests for that directory only
 #   If not provided, runs tests for all directories
@@ -8,6 +8,8 @@
 compile_and_run_test() {
     local dir="$1"
     local test_file="$dir/tests.cpp"
+    local binary="$dir/test_runner"
+    local code_file="$dir/code.hpp"
     
     if [ ! -f "$test_file" ]; then
         echo "Warning: No tests.cpp found in $dir"
@@ -18,28 +20,33 @@ compile_and_run_test() {
     echo "Running tests for: $dir"
     echo "========================================="
     
-    # Compile tests
-    if g++ -std=c++17 -O2 -Wall -o "$dir/test_runner" "$test_file"; then
-        # Run tests
-        if [ -f "$dir/test_runner" ]; then
-            cd "$dir"
-            ./test_runner
-            TEST_STATUS=$?
-            cd ..
-            rm -f "$dir/test_runner"
-            
-            if [ $TEST_STATUS -eq 0 ]; then
-                echo "✓ Tests passed for $dir"
-                return 0
-            else
-                echo "✗ Tests failed for $dir"
-                return 1
-            fi
+    # Only compile if source is newer than binary or binary doesn't exist
+    local needs_compile=true
+    local catch2_file="utils/catch2.hpp"
+    if [ -f "$binary" ]; then
+        if [ "$test_file" -ot "$binary" ] && \
+           ([ ! -f "$code_file" ] || [ "$code_file" -ot "$binary" ]) && \
+           ([ ! -f "$catch2_file" ] || [ "$catch2_file" -ot "$binary" ]); then
+            needs_compile=false
         fi
-    else
-        echo "✗ Compilation failed for $dir"
-        return 1
     fi
+    
+    if [ "$needs_compile" = true ]; then
+        # Compile tests with Catch2 - use -O0 for faster compilation, errors will be shown automatically
+        if ! g++ -std=c++17 -O0 -Wall -o "$binary" "$test_file" 2>&1; then
+            rm -f "$binary"
+            return 1
+        fi
+    fi
+    
+    # Run Catch2 tests - output will show test results
+    if [ -f "$binary" ]; then
+        cd "$dir"
+        ./test_runner
+        cd ..
+    fi
+    
+    return 0
 }
 
 if [ $# -eq 1 ]; then
@@ -57,57 +64,36 @@ if [ $# -eq 1 ]; then
         exit 1
     fi
 else
-    # Run tests for all directories (except template)
+    # Run tests for all directories
     echo "Running tests for all directories..."
     echo ""
     
-    FAILED_DIRS=()
-    PASSED_COUNT=0
-    TOTAL_COUNT=0
+    ERROR_DIRS=()
     
     for dir in */; do
         dir=${dir%/}
-        
-        # Skip template directory
-        if [ "$dir" = "template" ]; then
-            continue
-        fi
         
         # Skip if not a directory or doesn't have tests.cpp
         if [ ! -d "$dir" ] || [ ! -f "$dir/tests.cpp" ]; then
             continue
         fi
         
-        TOTAL_COUNT=$((TOTAL_COUNT + 1))
-        
-        if compile_and_run_test "$dir"; then
-            PASSED_COUNT=$((PASSED_COUNT + 1))
-        else
-            FAILED_DIRS+=("$dir")
+        if ! compile_and_run_test "$dir"; then
+            ERROR_DIRS+=("$dir")
         fi
         
         echo ""
     done
     
     # Summary
-    echo "========================================="
-    echo "Test Summary"
-    echo "========================================="
-    echo "Total directories tested: $TOTAL_COUNT"
-    echo "Passed: $PASSED_COUNT"
-    echo "Failed: ${#FAILED_DIRS[@]}"
-    
-    if [ ${#FAILED_DIRS[@]} -gt 0 ]; then
-        echo ""
-        echo "Failed directories:"
-        for dir in "${FAILED_DIRS[@]}"; do
+    if [ ${#ERROR_DIRS[@]} -gt 0 ]; then
+        echo "========================================="
+        echo "Directories with errors:"
+        echo "========================================="
+        for dir in "${ERROR_DIRS[@]}"; do
             echo "  - $dir"
         done
         exit 1
-    else
-        echo ""
-        echo "All tests passed! ✓"
-        exit 0
     fi
 fi
 

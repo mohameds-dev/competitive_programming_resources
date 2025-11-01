@@ -17,7 +17,7 @@ Each algorithm/data structure has its own directory with:
 
 ### Creating a New Directory
 
-To create a new directory from the template:
+To create a new directory from the dir_template:
 ```bash
 ./create_new_dir.sh directory_name
 ```
@@ -30,7 +30,7 @@ Example:
 ```
 
 This will:
-- Create a new directory with the template structure
+- Create a new directory with the dir_template structure
 - Replace "Code Template" in readme.md with the formatted directory name
 
 ### Running Tests

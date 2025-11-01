@@ -4,7 +4,6 @@ using namespace std;
 // Canary test to verify testing framework works
 void test_canary() {
     assert(1 + 1 == 2);
-    cout << "Canary test passed!" << endl;
 }
 
 // TODO: Add subject-specific tests below
@@ -16,17 +15,12 @@ void test_canary() {
 // }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
-    cout << "Running tests for Code Template..." << endl;
-    
-    test_canary();
-    
+    ios_base::sync_with_stdio(false);cin.tie(NULL);
+
     // TODO: Add more test calls here
+    test_canary();
     // test_example();
     
-    cout << "All tests passed!" << endl;
     return 0;
 }
 

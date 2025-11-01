@@ -6,8 +6,6 @@
 - **`main.cpp`**: Includes `code.hpp` and runs the algorithm on `input.txt`
 - **`tests.cpp`**: Includes `code.hpp` and contains unit tests using Catch2
 
-**Why separate `code.hpp`?** By keeping the implementation separate from `main()`, both `main.cpp` and `tests.cpp` can include it without causing duplicate `main()` function errors. This allows you to run the code on input files and test it separately.
-
 ## Setup
 
 ### Download Catch2

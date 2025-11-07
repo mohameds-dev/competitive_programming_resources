@@ -59,13 +59,13 @@ This will:
 Run tests for a specific directory:
 
 ```bash
-./run_tests.sh directory_name
+./tests_run.sh directory_name
 ```
 
 Run all tests:
 
 ```bash
-./run_tests.sh
+./tests_run.sh
 ```
 
 **Note:** The test script uses incremental compilation - it only recompiles if source files have changed, making subsequent test runs very fast.
@@ -75,13 +75,13 @@ Run all tests:
 Run the main code with input.txt:
 
 ```bash
-./run_code.sh directory_name
+./code_run.sh directory_name
 ```
 
 Example:
 
 ```bash
-./run_code.sh segment_tree
+./code_run.sh segment_tree
 ```
 
 ## Notes for Windows Users

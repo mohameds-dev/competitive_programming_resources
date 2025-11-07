@@ -6,10 +6,14 @@ MAIN_TEX_FILE="reference.tex"      # Your main LaTeX template
 OUTPUT_DIR="latex_pdf_output"      # Folder for all generated files
 OUTPUT_NAME="reference"            # The name of your final PDF
 
+# --- NEW: List of directories to skip ---
+SKIP_DIRS=("dir_template" "latex_pdf_output")
+# ----------------------------------------
+
 # 0. Remove the dir if it already exists
 rm -rf "$OUTPUT_DIR"
 
-# 1. Create the output directory if it doesn't exist
+# 1. Create the output directory
 mkdir "$OUTPUT_DIR"
 
 # 2. Generate the temporary content.tex file
@@ -19,6 +23,22 @@ echo "--- Generating LaTeX content ($CONTENT_FILE) ---"
 # Loop through all subdirectories
 for dir in */; do
     dirname=$(basename "$dir")
+    
+    # --- Extensible Skip Logic ---
+    skip=false
+    for skip_dir in "${SKIP_DIRS[@]}"; do
+        if [ "$dirname" == "$skip_dir" ]; then
+            skip=true
+            break
+        fi
+    done
+    
+    if $skip; then
+        echo "Skipping: $dirname"
+        continue
+    fi
+    # --- End of Skip Logic ---
+
     README_FILE="$dir/readme.md"
     
     FILE_TO_USE="" # Will store the path to the code file
@@ -56,7 +76,7 @@ for dir in */; do
     
     else
         # Optional: Log the directories that are skipped
-        # echo "Skipping: $dirname (no code.cpp or main.cpp found)"
+        # echo "Skipping $dirname: No code.cpp or main.cpp found"
         : # This colon is a 'do nothing' placeholder
     fi
 done
@@ -75,6 +95,7 @@ rm "$CONTENT_FILE" # Remove the temp file from the root
 rm "$OUTPUT_DIR/"*.aux
 rm "$OUTPUT_DIR/"*.log
 rm "$OUTPUT_DIR/"*.toc
+rm "$OUTPUT_DIR/"*.out 
 
 echo ""
 echo "✅ PDF Build Complete!"

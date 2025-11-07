@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <bits/stdc++.h>
 using namespace std;
-#include "code.hpp"
+#include "code.cpp"
 #include "../utils/catch2.hpp"
 
 // STEP 1: Add subject-specific tests below

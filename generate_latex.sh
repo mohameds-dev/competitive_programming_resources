@@ -6,8 +6,8 @@ MAIN_TEX_FILE="reference.tex"      # Your main LaTeX template
 OUTPUT_DIR="latex_pdf_output"      # Folder for all generated files
 OUTPUT_NAME="reference"            # The name of your final PDF
 
-# --- NEW: List of directories to skip ---
-SKIP_DIRS=("dir_template" "latex_pdf_output")
+# --- List of directories to skip ---
+SKIP_DIRS=("dir_template" "utils" "latex_pdf_output")
 # ----------------------------------------
 
 # 0. Remove the dir if it already exists
@@ -40,21 +40,27 @@ for dir in */; do
     # --- End of Skip Logic ---
 
     README_FILE="$dir/readme.md"
-    
-    FILE_TO_USE="" # Will store the path to the code file
+    FILE_TO_USE=""
+    LANGUAGE=""
 
-    # Priority 1: Check for code.cpp
+    # Step 1: Check for code.cpp
     if [ -f "$dir/code.cpp" ]; then
         FILE_TO_USE="$dir/code.cpp"
-    # Priority 2: If no code.cpp, check for main.cpp
+        LANGUAGE="C++"
+    # Step 2: If no code.cpp, check for main.cpp
     elif [ -f "$dir/main.cpp" ]; then
         FILE_TO_USE="$dir/main.cpp"
+        LANGUAGE="C++"
+    # Step 3: If no C++, check for main.py
+    elif [ -f "$dir/main.py" ]; then
+        FILE_TO_USE="$dir/main.py"
+        LANGUAGE="Python"
     fi
 
-    # Priority 3: If a file was found (FILE_TO_USE is not empty), process it.
+    # Step 4: If a file was found, process it.
     if [ -n "$FILE_TO_USE" ]; then
         
-        # Make a pretty name (e.g., "segment_tree" -> "Segment Tree")
+        # Make a pretty name
         pretty_name=$(echo "$dirname" | sed -e 's/_/ /g' -e 's/\b\(.\)/\u\1/g')
         echo "Found: $pretty_name (using $FILE_TO_USE)"
 
@@ -63,35 +69,29 @@ for dir in */; do
         echo "\addcontentsline{toc}{section}{$pretty_name}" >> "$CONTENT_FILE"
         echo "" >> "$CONTENT_FILE"
 
-        # 2. Add README.md (converts Markdown to LaTeX)
-        if [ -f "$README_FILE" ]; then
-            pandoc "$README_FILE" -f markdown -t latex >> "$CONTENT_FILE"
-            echo "\par" >> "$CONTENT_FILE"
-        fi
-
-        # 3. Add the C++ Code
-        echo "\lstinputlisting{$FILE_TO_USE}" >> "$CONTENT_FILE"
-        echo "\clearpage" >> "$CONTENT_FILE" # Start next algorithm on a new page
+        
+        # 2. Add the Code (now with language)
+        echo "\lstinputlisting[language=$LANGUAGE]{$FILE_TO_USE}" >> "$CONTENT_FILE"
+        echo "\clearpage" >> "$CONTENT_FILE" 
         echo "" >> "$CONTENT_FILE"
     
     else
-        # Optional: Log the directories that are skipped
-        # echo "Skipping $dirname: No code.cpp or main.cpp found"
-        : # This colon is a 'do nothing' placeholder
+        # echo "Skipping $dirname: No code file found"
+        : 
     fi
 done
 echo "--- Content generation complete ---"
 
-# 3. Compile the PDF (running twice for Table of Contents)
+# 3. Compile the PDF 
 echo "--- Compiling PDF (Pass 1) ---"
 pdflatex -output-directory="$OUTPUT_DIR" "$MAIN_TEX_FILE"
 
 echo "--- Compiling PDF (Pass 2) ---"
 pdflatex -output-directory="$OUTPUT_DIR" "$MAIN_TEX_FILE"
 
-# 4. Clean up all intermediate files
+# 4. Clean up 
 echo "--- Cleaning up intermediate files ---"
-rm "$CONTENT_FILE" # Remove the temp file from the root
+rm "$CONTENT_FILE" 
 rm "$OUTPUT_DIR/"*.aux
 rm "$OUTPUT_DIR/"*.log
 rm "$OUTPUT_DIR/"*.toc

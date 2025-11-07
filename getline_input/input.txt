@@ -1,0 +1,9 @@
+Line1 first
+Line2 second
+Line3 third
+2
+Hello world
+Another line
+This is EOF line 1
+EOF line 2
+EOF line 3

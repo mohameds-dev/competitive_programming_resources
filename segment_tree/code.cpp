@@ -1,4 +1,4 @@
-// templated node type. The neutral value is a static field on the node struct.
+// templated node type.
 template <typename T>
 struct node
 {

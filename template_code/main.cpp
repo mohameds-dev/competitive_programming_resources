@@ -34,7 +34,7 @@ const int N = 2e5 + 5, M = 20 + 5;
 bool MULTIPLE_TEST_CASES = true;
 
 void run_case(int case_index){
-
+    cout << "Hello world" << endl;
 }
 
 

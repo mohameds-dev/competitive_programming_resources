@@ -1,0 +1,21 @@
+# --- Main Template ---
+template_code
+
+# --- Math ---
+egcd
+mod_ncr
+sieve_primes
+smallest_prime_factor
+
+# --- Graph Algorithms ---
+dijkstra
+floyd_warshall
+
+# --- Data Structures ---
+segment_tree
+trie
+
+# --- Container Utilities ---
+bitset_funcs
+multiset_funcs
+vector_funcs

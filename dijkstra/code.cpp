@@ -26,7 +26,7 @@ void dijkstra(int start, int destination)
         
         if (current.node == destination) break; // O(1)
         
-        for (auto e : graph[current.node]){ // iterates over neighbors → O(E) total across all loops
+        for (auto e : graph[current.node]){ // iterates over neighbors -> O(E) total across all loops
             ll new_weight = current.weight + e.weight; // O(1)
             if (distance_to_node[e.node] > new_weight) { // O(1)
                 distance_to_node[e.node] = new_weight; // O(1)

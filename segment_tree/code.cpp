@@ -32,7 +32,7 @@ struct segment_tree
         return {val};
     }
 
-    // merge operation — here sum for generic T that supports +, it can be product, min, max, etc.
+    // merge operation - here sum for generic T that supports +, it can be product, min, max, etc.
     node<T> merge(const node<T> &node1, const node<T> &node2) const
     {
         return single(node1.val + node2.val);

@@ -13,9 +13,6 @@ void print_vec(const vector<T>& v, string name = "") {
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     vector<int> base = {5, 1, 3, 9, 7, 3};
 
     print_vec(base, "base");
@@ -113,6 +110,5 @@ int main() {
         // O(n + m) time, O(n) space
         print_vec(res, "set_difference");
     }
-
     return 0;
 }

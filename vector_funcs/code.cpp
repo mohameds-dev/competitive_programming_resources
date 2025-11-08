@@ -3,6 +3,13 @@ using namespace std;
 
 #define all(x) x.begin(), x.end()
 
+// Binary search for index of LAST element <= value
+// Returns -1 if no such element exists.
+int binary_search_last_lte(const vector<int>&arr, int value){
+  auto it = upper_bound(arr.begin(), arr.end(), value);
+  return it == arr.begin() ? -1 : int(it - arr.begin() - 1);
+}
+
 int main() {
     vector<int> base = {5, 1, 3, 9, 7, 3};
 

@@ -1,0 +1,57 @@
+\documentclass[10pt,a4paper]{article}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[a4paper, margin=1in]{geometry} % Standard 1-inch margins
+\usepackage{xcolor} % For code coloring
+\usepackage[hidelinks]{hyperref} % For hidden clickable ToC
+\usepackage{listings} % The core code-formatting package
+
+% --- METADATA ---
+\title{ICPC Team Reference}
+\author{CoogLimitExceeded} % Change this
+\date{}
+
+% --- LISTINGS (CODE) STYLE ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1,1,1} % <-- 1. Completely white background
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\normalsize, % <-- 2. Bigger font size
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    extendedchars=true, % Handles some UTF-8
+    xleftmargin=5pt, % <-- 3. Smaller left margin
+    xrightmargin=5pt % <-- 3. Smaller right margin
+}
+\lstset{style=mystyle} % Set as default
+
+% --- DOCUMENT ---
+\begin{document}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+% --- CONTENT ---
+% No more multicols, just input the content
+\input{content.tex} 
+
+\end{document}
